@@ -1,1 +1,1 @@
-"# django_rest_crud" 
+django_rest_crud

@@ -4,49 +4,34 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import Student_serializer
 from .models import Student
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin,CreateModelMixin,UpdateModelMixin,RetrieveModelMixin,DestroyModelMixin
 
 # Create your views here.
 
-class Student_api(APIView):
-    def get(self, request,pk = None, format=None):
-        if pk is not None:
-            st = Student.objects.get(pk=pk)
-            serializer = Student_serializer(st)
-            return Response(serializer.data,status=status.HTTP_200_OK)
-        
-        st = Student.objects.all()
-        serializer = Student_serializer(st,many=True)
-        return Response(serializer.data,status=status.HTTP_200_OK) 
+class List_Create_api(GenericAPIView,ListModelMixin,CreateModelMixin):
+    queryset = Student.objects.all()
+    serializer_class = Student_serializer
+
+    def get(self,request,*args,**kwargs):
+        return self.list(request,*args,**kwargs) 
     
-    def post(self,request,format=None):
-        serializer = Student_serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({'msg':'data created'},status=status.HTTP_201_CREATED)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    def post(self,request,*args,**kwargs):
+        return self.create(request,*args,**kwargs) 
+    
+class Retrieve_Update_Delete_api(GenericAPIView,RetrieveModelMixin,UpdateModelMixin,DestroyModelMixin):
+    queryset = Student.objects.all()
+    serializer_class = Student_serializer
+
+    def get(self,request,*args,**kwargs):
+        return self.retrieve(request,*args,**kwargs) 
+
+    def put(self,request,*args,**kwargs):
+        return self.update(request,*args,**kwargs) 
+
+    def delete(self,request,*args,**kwargs):
+        return self.destroy(request,*args,**kwargs) 
     
 
-    def put(self, request,pk = None, format=None):
-        st = Student.objects.get(pk=pk)
-        serializer = Student_serializer(st, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response( {'msg':'data updated'},status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
-    
-    def patch(self, request,pk = None, format=None):
-        st = Student.objects.get(pk=pk)
-        serializer = Student_serializer(st, data=request.data, partial = True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response( {'msg':'data updated'},status=status.HTTP_200_OK)
-        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-    
-    
-    def delete(self, request,pk = None, format=None):
-        st = Student.objects.get(pk=pk)
-        st.delete()
-        return Response( {'msg':'data deleted'},status=status.HTTP_200_OK)
 
     

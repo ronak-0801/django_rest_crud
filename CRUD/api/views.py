@@ -1,15 +1,15 @@
 from .serializers import Student_serializer
 from .models import Student
-from rest_framework.generics import ListCreateAPIView,RetrieveUpdateDestroyAPIView
+from rest_framework import viewsets
 
 # Create your views here.
 
-class List_Create_api(ListCreateAPIView):
+class Crudapi(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = Student_serializer
 
     
-class Retrieve_Update_Delete_api(RetrieveUpdateDestroyAPIView):
+class Read_only_api(viewsets.ReadOnlyModelViewSet):
     queryset = Student.objects.all()
     serializer_class = Student_serializer
 

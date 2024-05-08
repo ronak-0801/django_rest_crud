@@ -1,9 +1,15 @@
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from api import views
+from rest_framework.routers import DefaultRouter 
+
+router = DefaultRouter()
+
+router.register('crud_api',views.Crudapi,basename='crud')
+router.register('readonly_api',views.Read_only_api,basename='read_only')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('student_api/', views.List_Create_api.as_view()),
-    path('student_api/<int:pk>',views.Retrieve_Update_Delete_api.as_view())
+    path('',include(router.urls))
 ]
